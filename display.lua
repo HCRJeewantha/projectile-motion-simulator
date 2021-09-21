@@ -13,30 +13,36 @@ local chart = require( "chart" )
 
 local x_cordinates = {}
 local y_cordinates = {}
+local range = 0
+local time = 0
+local max_height = 0
 
 local x_normalized_cordinates = {}
 local y_normalized_cordinates = {}
+local line
+local rangeText
 
 local function displayChart()
-    local line = display.newLine( 0, 0, 0, 0 )
-    -- star:append( 305,165, 243,216 )
-
     for k, v in ipairs(y_normalized_cordinates) do
         line:append( x_normalized_cordinates[k],y_normalized_cordinates[k] )
     end
-    line:setStrokeColor( 0, 1, 0, 1 )
-    line.strokeWidth = 3
+end
+
+local function clear( event )
+
 end
 
 local function handleButtonEvent( event )
     if ( "ended" == event.phase ) then
-        local time = timeInputFunc()
         local angle = angleInputFunc()
         local velocity = velocityInputFunc()
 
-        x_cordinates, y_cordinates = chart:calcProjectile(time, angle, velocity)
-        x_normalized_cordinates, y_normalized_cordinates = chart:normalizingData(x_cordinates, y_cordinates)
-        
+        x_cordinates, y_cordinates, time = chart:calcProjectile(angle, velocity)
+        x_normalized_cordinates, y_normalized_cordinates, range, max_height = chart:normalizingData(x_cordinates, y_cordinates)
+        time = time 
+        range = range 
+        max_height = max_height
+        rangeText.text = "range "..range
         displayChart()
     end
 end
@@ -50,9 +56,17 @@ function scene:create( event )
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
  
+    line = display.newLine( 0, 0, 0, 0 )
+    line:setStrokeColor( 0, 1, 0, 1 )
+    line.strokeWidth = 3
+
+    sceneGroup:insert( line )
+
+    rangeText = display.newText( "range "..range, 70, 20, native.systemFont, 16 )
+    rangeText:setFillColor( 1, 0, 0 )
+
     local chart = display.newLine( 150, 290, 150, 80 )
     chart:append( 150,290, 500, 290 )
-
     chart:setStrokeColor( 1, 0, 0, 1 )
     chart.strokeWidth = 3
 
@@ -66,6 +80,17 @@ function scene:create( event )
             id = "button1",
             label = "Create Chart",
             onEvent = handleButtonEvent
+        }
+    )
+
+    -- Create the widget
+    local button2 = widget.newButton(
+        {
+            left =-50,
+            top = 20,
+            id = "button1",
+            label = "Clear Chart",
+            onEvent = clear
         }
     )
 
@@ -84,19 +109,9 @@ function scene:show( event )
         -- Code here runs when the scene is still off screen (but is about to come on screen)
         --angle input
         local angleInput = native.newTextField( 50, 150, 150, 36 )
-        angleInput.inputType = "number"
-
+       
         --init velocity input
         local velocityInput = native.newTextField( 50, 200, 150, 36 )
-        velocityInput.inputType = "number"
-
-        --time input
-        local timeInput = native.newTextField( 50, 250, 150, 36 )
-        timeInput.inputType = "number"
-
-        function timeInputFunc()
-            return timeInput.text
-        end
 
         function velocityInputFunc()
             return velocityInput.text 
@@ -106,25 +121,10 @@ function scene:show( event )
             return angleInput.text 
         end
 
-        function test(event)
-            print( "hi" )
-        end
-        local widget = require( "widget" )
-
-        -- Create the widget
-        local button2 = widget.newButton(
-            {
-                left =-50,
-                top = 0,
-                id = "button2",
-                label = "Clean Chart",
-                onEvent = test
-            }
-        )
+   
 
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
- 
     end
 end
  

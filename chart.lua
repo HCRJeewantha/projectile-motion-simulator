@@ -60,10 +60,12 @@ local velocity_y
 local position_x = 0
 local position_y = 0
 
-function charts:calcProjectile(time, angle, init_velocity)
+function charts:calcProjectile(angle, init_velocity)
 
-	local init_velocity_x = init_velocity * math.cos(angle)
-	local init_velocity_y = init_velocity * math.sin(angle)
+	local init_velocity_x = math.abs(init_velocity * math.cos(angle))
+	local init_velocity_y = math.abs(init_velocity * math.sin(angle))
+
+
 
 	net_force_x = 0
 	net_force_y = 0
@@ -83,9 +85,10 @@ function charts:calcProjectile(time, angle, init_velocity)
 	x_cordinates = {}
 	y_cordinates = {}
 
-	for i = 1, time/10, 1 do
-	--while(position_y >= 0)
-	-- do
+	local i = 1
+
+	while(position_y >= 0)
+	do
 
 		--X direction
 		--calculate drag force
@@ -128,11 +131,16 @@ function charts:calcProjectile(time, angle, init_velocity)
 
 		--calculate position
 		position_y =  calcPosition(init_velocity_y, acceleration_y, delta_time) + position_y
-		print(position_y)
+		--print(position_y)
 		--final velosity == initial velocity
 		init_velocity_y = velocity_y
+
+		print(acceleration_y)
+
+		i = i + 1
 	end
-	return x_cordinates, y_cordinates
+	local time  = i/100
+	return x_cordinates, y_cordinates, time
 end
 
 function findMinAndMax(table)
@@ -165,14 +173,14 @@ function charts:normalizingData(x_cordinates, y_cordinates)
 	y_min, y_max = findMinAndMax(y_cordinates)
 
 	for k, v in ipairs(x_cordinates) do
-		x_normalized_cordinates[k] = 150 + (v - x_min) / (x_max - x_min) * 350 --zi = (xi – min(x)) / (max(x) – min(x)) * 300
+		x_normalized_cordinates[k] = 150 + v*101--(v - x_min) / (x_max - x_min) * 350 --zi = (xi – min(x)) / (max(x) – min(x)) * 300
 	end
 
 	for k, v in ipairs(y_cordinates) do
-		y_normalized_cordinates[k] = 290 - (v - y_min) / (y_max - y_min) * 180 --zi = (xi – min(x)) / (max(x) – min(x)) * 300
+		y_normalized_cordinates[k] = 290 - v*101--(v - y_min) / (y_max - y_min) * 50 --zi = (xi – min(x)) / (max(x) – min(x)) * 300
 	end
 
-	return x_normalized_cordinates, y_normalized_cordinates
+	return x_normalized_cordinates, y_normalized_cordinates, x_max, y_max
 end
 
 return charts
