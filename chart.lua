@@ -62,10 +62,9 @@ local position_y = 0
 
 function charts:calcProjectile(angle, init_velocity)
 
-	local init_velocity_x = math.abs(init_velocity * math.cos(angle))
-	local init_velocity_y = math.abs(init_velocity * math.sin(angle))
-
-
+	local init_velocity_x = init_velocity * math.cos(math.rad(angle))
+	local init_velocity_y = init_velocity * math.sin(math.rad(angle))
+	print(math.cos(math.rad(angle)))
 
 	net_force_x = 0
 	net_force_y = 0
@@ -134,8 +133,6 @@ function charts:calcProjectile(angle, init_velocity)
 		--print(position_y)
 		--final velosity == initial velocity
 		init_velocity_y = velocity_y
-
-		print(acceleration_y)
 
 		i = i + 1
 	end
