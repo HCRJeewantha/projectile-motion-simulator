@@ -170,11 +170,11 @@ function charts:normalizingData(x_cordinates, y_cordinates)
 	y_min, y_max = findMinAndMax(y_cordinates)
 
 	for k, v in ipairs(x_cordinates) do
-		x_normalized_cordinates[k] = 150 + v*101--(v - x_min) / (x_max - x_min) * 350 --zi = (xi – min(x)) / (max(x) – min(x)) * 300
+		x_normalized_cordinates[k] = 40 + v*101--(v - x_min) / (x_max - x_min) * 350 --zi = (xi – min(x)) / (max(x) – min(x)) * 300
 	end
 
 	for k, v in ipairs(y_cordinates) do
-		y_normalized_cordinates[k] = 290 - v*101--(v - y_min) / (y_max - y_min) * 50 --zi = (xi – min(x)) / (max(x) – min(x)) * 300
+		y_normalized_cordinates[k] = 180 - v*101--(v - y_min) / (y_max - y_min) * 50 --zi = (xi – min(x)) / (max(x) – min(x)) * 300
 	end
 
 	return x_normalized_cordinates, y_normalized_cordinates, x_max, y_max

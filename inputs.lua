@@ -7,8 +7,6 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
  
- 
- 
 local chart = require( "chart" )
 
 local x_cordinates = {}
@@ -45,9 +43,9 @@ local function handleButtonEvent( event )
 
         x_cordinates, y_cordinates, time = chart:calcProjectile(angle, velocity)
         x_normalized_cordinates, y_normalized_cordinates, range, max_height = chart:normalizingData(x_cordinates, y_cordinates)
-        rangeText.text = "range "..range
-        maxHeightText.text = "max height "..max_height
-        timeText.text = "air time "..time
+        rangeText.text = "Range: "..range.." m"
+        maxHeightText.text = "Max height: "..max_height.." m"
+        timeText.text = "Air time: "..time.." s"
         displayChart()
     end
 end
@@ -67,43 +65,39 @@ function scene:create( event )
 
     sceneGroup:insert( line )
 
-    rangeText = display.newText( "range 0", 70, 20, native.systemFont, 16 )
-    rangeText:setFillColor( 1, 0, 0 )
-
-    maxHeightText = display.newText( "max height 0", 70, 40, native.systemFont, 16 )
-    maxHeightText:setFillColor( 1, 0, 0 )
-
-    timeText = display.newText( "range 0", 70, 60, native.systemFont, 16 )
-    timeText:setFillColor( 1, 0, 0 )
-
-    local chart = display.newLine( 150, 290, 150, 80 )
-    chart:append( 150,290, 500, 290 )
+    local chart = display.newLine(  40, 10, 40, 180 )
+    chart:append(  300, 180 )
     chart:setStrokeColor( 1, 0, 0, 1 )
     chart.strokeWidth = 3
+
+    rangeText = display.newText( "Range: 0 m", display.contentCenterX, 200, native.systemFont, 16 )
+    rangeText:setFillColor( 1, 0, 0 )
+
+    maxHeightText = display.newText( "Max height: 0 m", display.contentCenterX, 225, native.systemFont, 16 )
+    maxHeightText:setFillColor( 1, 0, 0 )
+
+    timeText = display.newText( "Air time: 0 s", display.contentCenterX, 250, native.systemFont, 16 )
+    timeText:setFillColor( 1, 0, 0 )
 
     local widget = require( "widget" )
 
     -- Create the widget
     local button1 = widget.newButton(
         {
-            left =-50,
-            top = 270,
             id = "button1",
             label = "Create Chart",
+            shape = "roundedRect",
+            width = 200,
+            height = 40,
+            cornerRadius = 2,
+            fillColor = { default={0,1,0,1}, over={0,0.7,0,0.4} },
+            strokeColor = { default={0,0.9,0,1}, over={0,0.8,0,1} },
+            strokeWidth = 2,
             onEvent = handleButtonEvent
         }
     )
-
-    -- Create the widget
-    -- local button2 = widget.newButton(
-    --     {
-    --         left =-50,
-    --         top = 20,
-    --         id = "button1",
-    --         label = "Clear Chart",
-    --         onEvent = clear
-    --     }
-    -- )
+    button1.x = display.contentCenterX
+    button1.y = 480
 
     -- Set default screen background color to blue
     display.setDefault( "background", 1, 1, 1 )
@@ -118,11 +112,16 @@ function scene:show( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
+
         --angle input
-        local angleInput = native.newTextField( 50, 150, 150, 36 )
+        angleInputText = display.newText( "Angle in degrees", display.contentCenterX, 300, native.systemFont, 16 )
+        angleInputText:setFillColor( 0, .8, 0 )
+        local angleInput = native.newTextField( display.contentCenterX, 340, 200, 36 )
        
         --init velocity input
-        local velocityInput = native.newTextField( 50, 200, 150, 36 )
+        angleInputText = display.newText( "Velocity in m/s", display.contentCenterX, 380, native.systemFont, 16 )
+        angleInputText:setFillColor( 0, .8, 0 )
+        local velocityInput = native.newTextField( display.contentCenterX, 415, 200, 36 )
 
         function velocityInputFunc()
             return velocityInput.text 
