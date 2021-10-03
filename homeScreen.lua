@@ -4,7 +4,8 @@ local scene = composer.newScene()
 local display = require ("display")
 local native = require("native")
 local widget = require("widget")
-
+local angleDirection 
+local arrow
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -15,30 +16,52 @@ local widget = require("widget")
 -- -----------------------------------------------------------------------------------
 -- xValue TextBox Event
 local function getAngle(event)
+    display.remove( angleDirection )
+    angleDirection = nil
+    angleDirection = display.newLine( 80, 190, 250, 190 )
+    angleDirection:setStrokeColor( 1, 0, 0, .5 )
+    angleDirection.strokeWidth = 3
+
     if (event.phase  == "ended") then
         if (event.target.text == '' or event.target.text == nil) then
             native.showAlert("Error!","No empty fields allowed",{"OK"})
         else
             value = tonumber(event.target.text)
-            if (value <0 or value > 90) then
+            if (value < 0 or value > 90) then
                 native.showAlert("Error!","X Value should be between 0 and 90",{"OK"})
             else
                 local xUser = tonumber(event.target.text)
-                print("User X Value: "..xUser)
+                local function rockRect()
+                    transition.to( arrow, { rotation= -xUser, time=500, transition=easing.inOutCubic } )
+                end
+                rockRect()
+                local position_x = 170 * math.cos(math.rad(xUser)) + 80
+                local position_y = -160 * math.sin(math.rad(xUser)) + 190
+
+                local myCircle = display.newCircle( 80, 190, 20 )
+                myCircle:setFillColor( 0, .8, 0, .5 )
+                myCircle.strokeWidth = 2
+                myCircle:setStrokeColor( 0, 0, 0 )
+
+                gravityLine = display.newLine( 80, 190, 80, 250 )
+                gravityLine:setStrokeColor( 0, 0, .8, .7 )
+                gravityLine:append( 70, 250, 80, 260, 90, 250, 70, 250 )
+
+                gravityLine.strokeWidth = 3
+
+
+                angleDirection:append( 80, 190, position_x, position_y )
+
             end
         end
     end
+
 end
 
 local function displayInterface()
 
     hedding = display.newText( "Projectile Motion Simulator", display.contentCenterX, 10, native.systemFont, 20 )
     hedding:setFillColor( 0, 0, .8 )
-
-    local star = display.newLine( 100, 180, 200, 180 )
-    star:append( 180,70 )
-    star:setStrokeColor( 1, 0, 0, 1 )
-    star.strokeWidth = 8
 
     --angle input
     angleInputText = display.newText( "Angle in degrees", display.contentCenterX, 300, native.systemFont, 16 )
@@ -139,6 +162,22 @@ function scene:show( event )
 
         print("----Scene 01----")
         displayInterface()
+
+        local rect = display.newRect( 150, 100, 150, 10 )
+        rect:setFillColor( 1, 0, 0 )
+   
+
+        arrow = display.newImage( "arrow.png" )
+ 
+        -- Position the image
+        arrow:translate( 100, 100 )
+        arrow:scale( 0.08, 0.06 )
+
+        arrow.anchorX = 0
+        arrow.anchorY = 0.5
+   
+
+
         angleInput:addEventListener("userInput",getAngle)
         sceneGroup:insert( hedding )
         sceneGroup:insert( submitButton )
