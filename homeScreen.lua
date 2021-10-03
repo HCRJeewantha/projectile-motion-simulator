@@ -4,8 +4,10 @@ local scene = composer.newScene()
 local display = require ("display")
 local native = require("native")
 local widget = require("widget")
-local angleDirection 
 local arrow
+local velocityDisplayText
+local position_x
+local position_y
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -16,12 +18,6 @@ local arrow
 -- -----------------------------------------------------------------------------------
 -- xValue TextBox Event
 local function getAngle(event)
-    display.remove( angleDirection )
-    angleDirection = nil
-    angleDirection = display.newLine( 80, 190, 250, 190 )
-    angleDirection:setStrokeColor( 1, 0, 0, .5 )
-    angleDirection.strokeWidth = 3
-
     if (event.phase  == "ended") then
         if (event.target.text == '' or event.target.text == nil) then
             native.showAlert("Error!","No empty fields allowed",{"OK"})
@@ -31,32 +27,38 @@ local function getAngle(event)
                 native.showAlert("Error!","X Value should be between 0 and 90",{"OK"})
             else
                 local xUser = tonumber(event.target.text)
+                position_x = 120 * math.cos(math.rad(xUser)) + 80
+                position_y = -120 * math.sin(math.rad(xUser)) + 190
                 local function rockRect()
                     transition.to( arrow, { rotation= -xUser, time=500, transition=easing.inOutCubic } )
                 end
                 rockRect()
-                local position_x = 170 * math.cos(math.rad(xUser)) + 80
-                local position_y = -160 * math.sin(math.rad(xUser)) + 190
+            end
+        end
+    end
+end
 
-                local myCircle = display.newCircle( 80, 190, 20 )
-                myCircle:setFillColor( 0, .8, 0, .5 )
-                myCircle.strokeWidth = 2
-                myCircle:setStrokeColor( 0, 0, 0 )
-
-                gravityLine = display.newLine( 80, 190, 80, 250 )
-                gravityLine:setStrokeColor( 0, 0, .8, .7 )
-                gravityLine:append( 70, 250, 80, 260, 90, 250, 70, 250 )
-
-                gravityLine.strokeWidth = 3
-
-
-                angleDirection:append( 80, 190, position_x, position_y )
+local function getVelocity(event)
+    display.remove( velocityDisplayText )
+    velocityDisplayText = nil
+    print(event.phase)
+    if (event.phase  == "ended") then
+        if (event.target.text == '' or event.target.text == nil) then
+            native.showAlert("Error!","No empty fields allowed",{"OK"})
+        else
+            value = tonumber(event.target.text)
+            if (value < 0 or value > 10) then
+                native.showAlert("Error!","X Value should be between 0 and 90",{"OK"})
+            else
+                local velocity = tonumber(event.target.text)
+                velocityDisplayText = display.newText( velocity.." m/s", position_x, position_y, native.systemFont, 16 )
+                velocityDisplayText:setFillColor( 0, .9, 0 )
 
             end
         end
     end
-
 end
+
 
 local function displayInterface()
 
@@ -163,14 +165,26 @@ function scene:show( event )
         print("----Scene 01----")
         displayInterface()
 
-        local rect = display.newRect( 150, 100, 150, 10 )
+        local rect = display.newRect( 150, 215, 200, 10 )
         rect:setFillColor( 1, 0, 0 )
+
+        local horizantal_line = display.newLine( 80, 190, 180, 190 )
+        horizantal_line:setStrokeColor( 0, 0, 1, .5 )
+        horizantal_line.strokeWidth = 2
+
+        local gravity_force = display.newLine( 80, 190, 80, 260 )
+        gravity_force:setStrokeColor( 1, .5, 0.5, .7 )
+        gravity_force.strokeWidth = 3
+
+        local projectileObj = display.newCircle( 80, 190, 20 )
+        projectileObj:setFillColor( 0, .8, 0, .5 )
+        projectileObj.strokeWidth = 2
+        projectileObj:setStrokeColor( 0, 0, 0 )
    
 
         arrow = display.newImage( "arrow.png" )
- 
         -- Position the image
-        arrow:translate( 100, 100 )
+        arrow:translate( 80, 190 )
         arrow:scale( 0.08, 0.06 )
 
         arrow.anchorX = 0
@@ -179,7 +193,13 @@ function scene:show( event )
 
 
         angleInput:addEventListener("userInput",getAngle)
+        velocityInput:addEventListener("userInput",getVelocity)
         sceneGroup:insert( hedding )
+        sceneGroup:insert( arrow )
+        sceneGroup:insert( rect )
+        sceneGroup:insert( horizantal_line )
+        sceneGroup:insert( gravity_force )
+        sceneGroup:insert( projectileObj )
         sceneGroup:insert( submitButton )
  
     elseif ( phase == "did" ) then
@@ -200,6 +220,7 @@ function scene:hide( event )
         velocityInputText:removeSelf()
         angleInput:removeSelf()
         velocityInput:removeSelf()
+        arrow:removeSelf()
 
         -- Code here runs when the scene is on screen (but is about to go off screen)
  
