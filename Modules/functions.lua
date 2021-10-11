@@ -22,10 +22,17 @@ local charts = {}
 
 --this function retuens X and Y values of velocity with the angle
 function calcXandYVelocity(init_velocity, angle)
-	local init_velocity_x = init_velocity * math.cos(math.rad(angle))
-	local init_velocity_y = init_velocity * math.sin(math.rad(angle))
-
-	return init_velocity_x, init_velocity_y
+	if init_velocity > 0  then
+		if  angle > 0 and angle < 90 then
+			local init_velocity_x = init_velocity * math.cos(math.rad(angle))
+			local init_velocity_y = init_velocity * math.sin(math.rad(angle))
+			return init_velocity_x, init_velocity_y
+		else
+			return "Angle should be in range 0 < angle 90"
+		end
+	else
+		return "Inital velocity should be grater than 0"
+	end
 end
 
 --this function returns drag froce
