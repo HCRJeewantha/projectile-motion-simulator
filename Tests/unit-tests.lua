@@ -62,7 +62,7 @@ function testCalcAcceleration_TC11()
 end
 
 
---this function calculate velocity for x and y directions
+--this function calculate velocity for x and y directions in the given time period
 function testCalcVelocity_TC12()
 	--calcVelocity(init_velocity ,acceleration, delta_time)
 	velocity = calcVelocity(4, 5, 4)
