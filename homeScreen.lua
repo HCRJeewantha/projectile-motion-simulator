@@ -181,6 +181,8 @@ function scene:show( event )
         projectileObj.strokeWidth = 2
         projectileObj:setStrokeColor( 0, 0, 0 )
    
+        gravityForceText = display.newText( "-0.03184 N", 130, 250, native.systemFont, 16 )
+        gravityForceText:setFillColor( 0, .9, 0 )
 
         arrow = display.newImage( "arrow.png" )
         -- Position the image
@@ -190,7 +192,7 @@ function scene:show( event )
         arrow.anchorX = 0
         arrow.anchorY = 0.5
    
-
+        velocityDisplayText = display.newText( "0 m/s", 120, 350, native.systemFont, 16 )
 
         angleInput:addEventListener("userInput",getAngle)
         velocityInput:addEventListener("userInput",getVelocity)
