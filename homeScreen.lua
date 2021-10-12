@@ -223,7 +223,8 @@ function scene:hide( event )
         angleInput:removeSelf()
         velocityInput:removeSelf()
         arrow:removeSelf()
-
+        gravityForceText:removeSelf()
+        velocityDisplayText:removeSelf()
         -- Code here runs when the scene is on screen (but is about to go off screen)
  
     elseif ( phase == "did" ) then
