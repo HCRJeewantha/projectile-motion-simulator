@@ -180,14 +180,14 @@ function charts:newChartData(angle, init_velocity)
 	x_min, x_max = findMinAndMax(x_cordinates)
 	y_min, y_max = findMinAndMax(y_cordinates)
 
-	y_max_cordinate = 180 - y_max*100
+	y_max_cordinate = 230 - y_max*100
 	x_max_cordinate = 40 + x_max*100
 	for k, v in ipairs(x_cordinates) do
 		x_normalized_cordinates[k] = 40 + v*100--(v - x_min) / (x_max - x_min) * 350 --zi = (xi – min(x)) / (max(x) – min(x)) * 300
 	end
 
 	for k, v in ipairs(y_cordinates) do
-		y_normalized_cordinates[k] = 180 - v*100--(v - y_min) / (y_max - y_min) * 50 --zi = (xi – min(x)) / (max(x) – min(x)) * 300
+		y_normalized_cordinates[k] = 230 - v*100--(v - y_min) / (y_max - y_min) * 50 --zi = (xi – min(x)) / (max(x) – min(x)) * 300
 	end
 
 	return x_normalized_cordinates, y_normalized_cordinates, x_max, y_max, time, y_max_cordinate, x_max_cordinate

@@ -30,13 +30,13 @@ local velocity
 -- -----------------------------------------------------------------------------------
 local function displayChart()
     line = display.newLine( 0, 0, 0, 0 )
-    line:setStrokeColor( 0, 1, 0, 1 )
-    line.strokeWidth = 3
+    line:setStrokeColor( 0, 0, 1, 1 )
+    line.strokeWidth = 1.5
 
-    graph = display.newLine(  40, 10, 40, 180 )
-    graph:append(  300, 180 )
-    graph:setStrokeColor( 1, 0, 0, 1 )
-    graph.strokeWidth = 3
+    graph = display.newLine(  40, 50, 40, 230 )
+    graph:append(  300, 230, 300, 50, 40, 50 )
+    graph:setStrokeColor( 0, 0, 0, .5 )
+    graph.strokeWidth = 1.8
 
     for k, v in ipairs(y_normalized_cordinates) do
         line:append( x_normalized_cordinates[k],y_normalized_cordinates[k] )
@@ -53,9 +53,9 @@ local function createChart(angle, velocity)
     maxHeightText.text = "Max height: "..max_height.." m"
     timeText.text = "Air time: "..time.." s"
 
-    horizantal_line = display.newLine(  30, y_max_cordinate, 180, y_max_cordinate )
+    horizantal_line = display.newLine(  40, y_max_cordinate, 300, y_max_cordinate )
     horizantal_line:setStrokeColor( 0, 0.7, 0.7, 1 )
-    horizantal_line.strokeWidth = 3
+    horizantal_line.strokeWidth = 1.3
 
     print( y_max_cordinate )
     displayChart()
@@ -63,6 +63,10 @@ end
 
 local function back()
     composer.gotoScene( "homeScreen", "crossFade",400)
+end
+
+local function exit()
+    os.exit()
 end
 
 -- create()
@@ -92,14 +96,30 @@ function scene:show( event )
         angle = tonumber(event.params.angle)
         velocity = tonumber(event.params.velocity)
 
-        rangeText = display.newText( "Range: 0 m", display.contentCenterX, 200, native.systemFont, 16 )
-        rangeText:setFillColor( 1, 0, 0 )
+        rangeText = display.newText( "Range: 0 m", 40, 250, native.systemFont, 16 )
+        rangeText:setFillColor( 0, .8, 0 )
+        rangeText.anchorX = 0
+        rangeText.anchorY = 0
 
-        maxHeightText = display.newText( "Max height: 0 m", display.contentCenterX, 225, native.systemFont, 16 )
-        maxHeightText:setFillColor( 1, 0, 0 )
+        maxHeightText = display.newText( "Max height: 0 m", 40, 275, native.systemFont, 16 )
+        maxHeightText:setFillColor( 0, .8, 0 )
+        maxHeightText.anchorX = 0
+        maxHeightText.anchorY = 0
 
-        timeText = display.newText( "Air time: 0 s", display.contentCenterX, 250, native.systemFont, 16 )
-        timeText:setFillColor( 1, 0, 0 )
+        timeText = display.newText( "Air time: 0 s", 40, 300, native.systemFont, 16 )
+        timeText:setFillColor( 0, .8, 0 )
+        timeText.anchorX = 0
+        timeText.anchorY = 0
+
+        velocityText = display.newText( "Initial Velocity: "..velocity.." m/s", 40, 325, native.systemFont, 16 )
+        velocityText:setFillColor( 0, .8, 0 )
+        velocityText.anchorX = 0
+        velocityText.anchorY = 0
+
+        angleText = display.newText( "Projectile Angle: "..angle.."°", 40, 350, native.systemFont, 16 )
+        angleText:setFillColor( 0, .8, 0 )
+        angleText.anchorX = 0
+        angleText.anchorY = 0
 
         backButton = widget.newButton(
             {
@@ -109,18 +129,38 @@ function scene:show( event )
             width = 200,
             height = 40,
             cornerRadius = 2,
-            fillColor = { default={0,1,0,1}, over={0,0.7,0,0.4} },
+            fillColor = { default={0,.7,0,1}, over={0,0.7,0,0.4} },
+            labelColor = { default={ 1, 1, 1 }, over={ 0, 0, 0, 0.5 } },
             strokeColor = { default={0,0.9,0,1}, over={0,0.8,0,1} },
             strokeWidth = 2,
             onEvent = back,
             }
         )
         backButton.x = display.contentCenterX
-        backButton.y = 480
+        backButton.y = 420
+
+        exitButton = widget.newButton(
+            {
+            id = "exit",
+            label = "EXIT",
+            shape = "roundedRect",
+            width = 200,
+            height = 40,
+            cornerRadius = 2,
+            fillColor = { default={0.7,0,0,1}, over={.6,0,0,0.4} },
+            strokeColor = { default={1,0,0,1}, over={1,0,0,1} },
+            labelColor = { default={ 1, 1, 1 }, over={ 0, 0, 0, 0.5 } },
+            strokeWidth = 2,
+            onEvent = exit,
+            }
+        )
+        exitButton.x = display.contentCenterX
+        exitButton.y = 480
 
         createChart(angle, velocity)
         sceneGroup:insert( fullGraph )
         sceneGroup:insert( backButton )
+        sceneGroup:insert( exitButton )
     end
 end
  
@@ -133,12 +173,14 @@ function scene:hide( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is on screen (but is about to go off screen)
-        rangeText:removeSelf()
-        maxHeightText:removeSelf()
-        timeText:removeSelf()
-        line:removeSelf()
-        horizantal_line:removeSelf()
-        sceneGroup:removeSelf()
+        rangeText:removeSelf( )
+        maxHeightText:removeSelf( )
+        timeText:removeSelf( )
+        velocityText:removeSelf( )
+        angleText:removeSelf( )
+        line:removeSelf( )
+        horizantal_line:removeSelf( )
+        sceneGroup:removeSelf( )
     
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
