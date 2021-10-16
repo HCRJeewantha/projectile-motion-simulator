@@ -66,7 +66,7 @@ local function createChart(angle, velocity)
 end
 
 local function back()
-    composer.gotoScene( "homeScreen", "crossFade",400)
+    composer.gotoScene( "inputScreen", "crossFade",400)
 end
 
 local function exit()
