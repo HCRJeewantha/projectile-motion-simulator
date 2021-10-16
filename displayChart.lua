@@ -22,13 +22,17 @@ local maxHeightText
 local timeText
 local angle
 local velocity
+local hrLineGroup
+
  
  
  
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
+
 local function displayChart()
+
     line = display.newLine( 0, 0, 0, 0 )
     line:setStrokeColor( 0, 0, 1, 1 )
     line.strokeWidth = 1.5
@@ -156,11 +160,12 @@ function scene:show( event )
         )
         exitButton.x = display.contentCenterX
         exitButton.y = 480
-
+        
         createChart(angle, velocity)
         sceneGroup:insert( fullGraph )
         sceneGroup:insert( backButton )
         sceneGroup:insert( exitButton )
+        sceneGroup:insert( horizantal_line )
     end
 end
  

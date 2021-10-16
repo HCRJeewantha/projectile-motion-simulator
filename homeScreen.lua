@@ -74,11 +74,11 @@ local function submitResults( event )
             native.showAlert("Error!","No empty fields allowed",{"OK"})
             validation3 = false
         else
-            if (velocityValue>=0 and velocityValue<=10) then
+            if (velocityValue > 0 and velocityValue<= 5) then
                 print ("velocity Value: Valid")
             else
                 print("velocity Value: Invalid")
-                native.showAlert("Error!","velocity should be between 0 and 10",{"OK"})
+                native.showAlert("Error!","velocity should be between 0 and 5",{"OK"})
                 validation2 = false
             end
         end
